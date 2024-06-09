@@ -1,0 +1,7 @@
+{
+  "name": "My Email Block",
+  "version": "1.0",
+  "description": "A block to send personalized emails from Airtable",
+  "frontendEntry": "./frontend/index.js",
+  "frontendTestingEntry": "./test/index.jsx"
+}
