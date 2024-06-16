@@ -117,7 +117,7 @@ app.get('/oauth2callback', async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code);
     console.log("tokens : ",tokens);
     req.session.tokens = tokens;
-    res.send('Authorization successful! You can close this window.');
+    res.send(`Authorization successful!<h3> Copy and Paste this AccessToken in the extension accesstoken field : ${req.session.tokens.access_token} </h3> You can close this window.`);
 });
 
 app.get('/logout', (req, res) => {
