@@ -140,19 +140,28 @@ app.post('/send-emails', async (req, res) => {
 
     try {
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
-        await Promise.all(emails.map(async ({ email, firstName, lastName }) => {
-            const personalizedMessage = message.replace('{firstName}', firstName).replace('{lastName}', lastName);
-            const emailContent = `To: ${email}\r\nSubject: ${subject}\r\n\r\n${personalizedMessage}`;
-            console.log("email content :: ",emailContent);
+        await Promise.all(emails.map(async record => {
+            let personalizedMessage = message;
+
+            Object.keys(record.fields).forEach(key => {
+                const regex = new RegExp(`{{${key}}}`, 'g');
+                personalizedMessage = personalizedMessage.replace(regex, record.fields[key] || '');
+            });
+
+            const emailContent = `To: ${record.email}\r\nSubject: ${subject}\r\n\r\n${personalizedMessage}`;
+            
+            console.log("email content is : ",emailContent);
+            const raw = Buffer.from(emailContent).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
+
             await gmail.users.messages.send({
                 userId: 'me',
                 requestBody: {
-                    raw: Buffer.from(emailContent).toString('base64').replace(/\+/g, '-').replace(/\//g, '_'),
+                    raw: raw,
                 },
             });
         }));
 
-        res.status(200).send({success:true,message:'Emails sent successfully'});
+        res.status(200).json({ success: true, message: 'Emails sent successfully' });
     } catch (error) {
         console.log("error is : ",error.message);
         res.json({ success: false, message: error.message });
