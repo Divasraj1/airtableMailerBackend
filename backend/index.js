@@ -29,6 +29,7 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 app.get('/auth/google', (req, res) => {
+    console.log("oauth initialization");
     const scopes = ['https://www.googleapis.com/auth/gmail.send'];
     const url = oauth2Client.generateAuthUrl({
         access_type: 'offline',
@@ -69,6 +70,7 @@ app.post('/send-emails', async (req, res) => {
     });
 
     try {
+        console.log("send-email clicked");
         const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
         await Promise.all(emails.map(async record => {
             let personalizedMessage = message;
@@ -89,7 +91,7 @@ app.post('/send-emails', async (req, res) => {
                 },
             });
         }));
-
+        
         res.status(200).json({ success: true, message: 'Emails sent successfully' });
     } catch (error) {
         console.log("error is : ",error.message);

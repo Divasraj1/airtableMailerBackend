@@ -15,17 +15,19 @@ const App = () => {
   const records = useRecords(table);
     const [status, setStatus] = useState('');
 
-    // const AUTH_GOOGLE_URL = 'https://airtablemailerbackend.onrender.com/auth/google';
-    // const SEND_EMAIL_API = 'https://airtablemailerbackend.onrender.com/send-emails';
-    // const LOG_OUT_URL = 'https://airtablemailerbackend.onrender.com/logout';
+    const AUTH_GOOGLE_URL = 'https://airtablemailerbackend.onrender.com/auth/google';
+    const SEND_EMAIL_API = 'https://airtablemailerbackend.onrender.com/send-emails';
+    const LOG_OUT_URL = 'https://airtablemailerbackend.onrender.com/logout';
+    const BACKEND_ORIGIN = 'https://airtablemailerbackend.onrender.com';
 
-    const AUTH_GOOGLE_URL = 'http://localhost:3000/auth/google';
-    const SEND_EMAIL_API = 'http://localhost:3000/send-emails';
-    const LOG_OUT_URL = 'http://localhost:3000/logout';
+    // const AUTH_GOOGLE_URL = 'http://localhost:3000/auth/google';
+    // const SEND_EMAIL_API = 'http://localhost:3000/send-emails';
+    // const LOG_OUT_URL = 'http://localhost:3000/logout';
+    // const BACKEND_ORIGIN = 'http://localhost:3000';
 
     useEffect(() => {
       const handleMessage = (event) => {
-          if (event.origin === 'http://localhost:3000') { // Change this to your deployed backend URL
+          if (event.origin === BACKEND_ORIGIN) { // Change this to your deployed backend URL
               const accessToken = event.data;
               setAccessToken(accessToken);
               globalConfig.setAsync('accessToken', accessToken);
@@ -40,6 +42,7 @@ const App = () => {
   }, [globalConfig]);
 
     const handleAuthorize = () => {
+      console.log("authorization called");
         window.open(AUTH_GOOGLE_URL, 'google-auth-popup', 'width=500,height=600');
     };
 
@@ -53,8 +56,8 @@ const App = () => {
                   return acc;
               }, {})
           }));
-            console.log("{accessToken, emails,subject, message } : ",{accessToken, emails,subject, message });
-                
+            // console.log("{accessToken, emails,subject, message } : ",{accessToken, emails,subject, message });
+                console.log("send email called");
             const response = await fetch(SEND_EMAIL_API, {
                 method: 'POST',
                 headers: {
@@ -98,11 +101,11 @@ const App = () => {
     return (
         <div>
           <h2>Airtable Mailer</h2>
-          <h3>Send Personalised Emails</h3>
-            <Button onClick={handleAuthorize} variant="primary">
+          <h3>Send Personalised Mass Emails</h3>
+            <Button onClick={handleAuthorize} variant="primary" style={{marginBottom: "10px"}}>
                 Authorize
             </Button>
-            <Button onClick={handleLogout} variant="danger">
+            <Button onClick={handleLogout} variant="danger" style={{marginLeft: "10px"}}>
                 Logout
             </Button>
             
@@ -147,7 +150,7 @@ const App = () => {
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Write your message here. Use {firstName} and {lastName} for personalization."
+            placeholder="Write your message here. Use {{Name}} and {{CompanyName}} for personalization."
           />
           </FormField>
         </div>
