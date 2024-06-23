@@ -6,7 +6,7 @@ const session = require('express-session');
 
 const app = express();
 // Configure CORS
-const allowedOrigins = [process.env.CORS_ALLOWED_ORIGINS];
+const allowedOrigins = [process.env.CORS_ALLOWED_ORIGINS]; //https://airtable.com use after release
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -41,7 +41,14 @@ app.get('/oauth2callback', async (req, res) => {
     const { code } = req.query;
     const { tokens } = await oauth2Client.getToken(code);
     req.session.tokens = tokens;
-    res.send(`Authorization successful!<h3> Copy and Paste this AccessToken in the extension accesstoken field : ${req.session.tokens.access_token} </h3> You can close this window.`);
+    const accessToken = tokens.access_token;
+    // res.send(`Authorization successful!<h3> Copy and Paste this AccessToken in the extension accesstoken field : ${req.session.tokens.access_token} </h3> You can close this window.`);
+    res.send(`
+        <script>
+            window.opener.postMessage(${JSON.stringify(accessToken)}, '*');
+            window.close();
+        </script>
+    `);
 });
 
 app.get('/logout', (req, res) => {

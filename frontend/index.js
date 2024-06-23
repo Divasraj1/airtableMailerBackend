@@ -1,6 +1,7 @@
 import { initializeBlock, useGlobalConfig,FormField,Input,useBase,useRecords } from '@airtable/blocks/ui';
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Button } from '@airtable/blocks/ui';
+import './styles.css'
 
 const App = () => {
     const base = useBase();
@@ -14,9 +15,29 @@ const App = () => {
   const records = useRecords(table);
     const [status, setStatus] = useState('');
 
+    // const AUTH_GOOGLE_URL = 'https://airtablemailerbackend.onrender.com/auth/google';
+    // const SEND_EMAIL_API = 'https://airtablemailerbackend.onrender.com/send-emails';
+    // const LOG_OUT_URL = 'https://airtablemailerbackend.onrender.com/logout';
+
     const AUTH_GOOGLE_URL = 'http://localhost:3000/auth/google';
     const SEND_EMAIL_API = 'http://localhost:3000/send-emails';
     const LOG_OUT_URL = 'http://localhost:3000/logout';
+
+    useEffect(() => {
+      const handleMessage = (event) => {
+          if (event.origin === 'http://localhost:3000') { // Change this to your deployed backend URL
+              const accessToken = event.data;
+              setAccessToken(accessToken);
+              globalConfig.setAsync('accessToken', accessToken);
+          }
+      };
+
+      window.addEventListener('message', handleMessage);
+
+      return () => {
+          window.removeEventListener('message', handleMessage);
+      };
+  }, [globalConfig]);
 
     const handleAuthorize = () => {
         window.open(AUTH_GOOGLE_URL, 'google-auth-popup', 'width=500,height=600');
@@ -76,7 +97,8 @@ const App = () => {
 
     return (
         <div>
-        <h1>Send Emails</h1>
+          <h2>Airtable Mailer</h2>
+          <h3>Send Personalised Emails</h3>
             <Button onClick={handleAuthorize} variant="primary">
                 Authorize
             </Button>
@@ -84,15 +106,6 @@ const App = () => {
                 Logout
             </Button>
             
-            <FormField label="Access Token">
-                 <Input
-                     value={accessToken}
-                     onChange={e => {
-                         setAccessToken(e.target.value);
-                         globalConfig.setAsync('accessToken', e.target.value);
-                     }}
-                 />
-             </FormField>
              <div>
            <FormField label="Select Table">
            <select onChange={(e) => setTableId(e.target.value)}>
