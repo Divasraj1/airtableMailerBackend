@@ -14,9 +14,7 @@ import "./styles.css";
 
 const App = () => {
   const projectId = "5594501f4f4ffa188f99874a93fe2181";
-  mixpanel.init(projectId, {
-    debug: true,
-    track_pageview: true,
+  mixpanel.init(projectId, { //debug: true,track_pageview: true,
     persistence: "localStorage",
   });
   const base = useBase();
