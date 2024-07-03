@@ -30,7 +30,7 @@ const oauth2Client = new google.auth.OAuth2(
 
 app.get('/auth/google', (req, res) => {
     console.log("oauth initialization");
-    const scopes = ['https://www.googleapis.com/auth/gmail.send'];
+    const scopes = ['https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email'];
     const url = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: scopes,

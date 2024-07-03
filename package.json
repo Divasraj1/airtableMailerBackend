@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@airtable/blocks": "^1.5.1",
+        "mixpanel-browser": "^2.53.0",
         "react": "^16.9.0",
         "react-dom": "^16.9.0"
     },

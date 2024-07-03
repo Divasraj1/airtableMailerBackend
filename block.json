@@ -1,7 +1,16 @@
 {
-  "name": "My Email Block",
+  "name": "Mail Merge",
   "version": "1.0",
-  "description": "A block to send personalized emails from Airtable",
+  "description": "An extension to send merge mails using Gmail.",
+  "main": "frontend/index.js",
   "frontendEntry": "./frontend/index.js",
-  "frontendTestingEntry": "./test/index.jsx"
+  "frontendTestingEntry": "./test/index.jsx",
+  "resources": {
+      "scripts": ["frontend/index.js"],
+      "styles": ["frontend/styles.css"]
+  },
+  "permissions": {
+      "tables": ["read", "write"],
+      "externalApi": ["https://www.googleapis.com/auth/gmail.send"]
+  }
 }
