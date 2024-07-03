@@ -139,6 +139,8 @@ const App = () => {
       if (response.ok) {
         // Clear tokens from global config
         await globalConfig.setAsync("accessToken", null);
+        await globalConfig.setAsync('userEmail', null);
+        await globalConfig.setAsync('userName', null);
         alert("Logged out successfully!");
         window.location.reload();
       } else {
